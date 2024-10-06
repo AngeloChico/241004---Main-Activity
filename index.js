@@ -1,3 +1,10 @@
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 // Store Details
 const storeName = "PC Hardware Hub";
 const storeLocation = "Las Piñas City";
@@ -121,14 +128,47 @@ function displayInventoryStatus() {
   });
 }
 
-// Example usage
+function userInteraction() {
+  rl.question("Enter 'add' to add a product, 'remove' to remove a product, or 'restock' to restock a product: ", (action) => {
+    action = action.toLowerCase();
+    if (action === "add") {
+      rl.question("Enter product name: ", (name) => {
+        rl.question("Enter product price: ", (price) => {
+          rl.question("Enter product quantity: ", (quantity) => {
+            addProduct(name, parseFloat(price), parseInt(quantity));
+            console.log("Updated Inventory Value: ", calculateTotalInventoryValue());
+            rl.close();
+          });
+        });
+      });
+    } else if (action === "remove") {
+      rl.question("Enter product name to remove: ", (name) => {
+        rl.question("Enter quantity to remove: ", (quantity) => {
+          removeProduct(name, parseInt(quantity));
+          console.log("Updated Inventory Value: ", calculateTotalInventoryValue());
+          rl.close();
+        });
+      });
+    } else if (action === "restock") {
+      rl.question("Enter product name to restock: ", (name) => {
+        rl.question("Enter threshold quantity: ", (threshold) => {
+          restockProduct(name, parseInt(threshold));
+          console.log("Updated Inventory Value: ", calculateTotalInventoryValue());
+          rl.close();
+        });
+      });
+    } else {
+      console.log("Invalid action. Please enter 'add', 'remove', or 'restock'.");
+      rl.close();
+    }
+  });
+}
+
+// Initial Output
 console.log(
   checkInventoryCapacity() ? "Inventory still has space." : "Inventory is full."
 );
 displayInventoryStatus();
 
-// Uncomment these lines to test other functions
-addProduct("SSD (1TB)", 8000, 25);
-// removeProduct("GPU", 5);
-// restockProduct("CPU", 20);
-// displayInventoryStatus();
+// Run User Interaction
+userInteraction();
